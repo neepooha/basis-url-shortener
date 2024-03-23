@@ -38,8 +38,8 @@ func New(log *slog.Logger, urlDeleter URLDeleter) http.HandlerFunc {
 		err := urlDeleter.DeleteURL(alias)
 		if err != nil {
 			if errors.Is(err, storage.ErrAliasNotFound) {
-				log.Info("wrong alias", slog.String("alias", alias))
-				render.JSON(w, r, resp.Error("wrong alias"))
+				log.Info("url by alias was not found", slog.String("alias", alias))
+				render.JSON(w, r, resp.Error("url by alias was not found"))
 				return
 			}
 			log.Info("failed to delete url", sl.Err(err))

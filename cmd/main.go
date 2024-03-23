@@ -11,6 +11,7 @@ import (
 	"url_shortener/internal/transport/handlers/url/delete"
 	"url_shortener/internal/transport/handlers/url/redirect"
 	"url_shortener/internal/transport/handlers/url/save"
+	mwLogger "url_shortener/internal/transport/middleware/logger"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -41,7 +42,11 @@ func main() {
 	router := chi.NewRouter()
 
 	router.Use(middleware.RequestID)
+
+	// Для локальной откладки включить.
 	router.Use(middleware.Logger)
+
+	router.Use(mwLogger.New(log))
 	router.Use(middleware.Recoverer)
 	router.Use(middleware.URLFormat)
 
