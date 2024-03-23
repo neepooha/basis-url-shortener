@@ -8,7 +8,6 @@ import (
 	"url_shortener/internal/lib/logger/sl"
 	"url_shortener/internal/lib/random"
 	"url_shortener/internal/storage"
-	"url_shortener/internal/storage/sqlite"
 
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/render"
@@ -25,33 +24,34 @@ type Response struct {
 	Alias string `json:"alias,omitempty"`
 }
 
+//go:generate go run github.com/vektra/mockery/v2@v2.28.2 --name=URLSaver
 type URLSaver interface {
 	SaveURL(urlToSave string, alias string) error
 }
 
 const aliasLength = 6
 
-// checking interface implementation
-var _ URLSaver = &sqlite.Storage{}
-
 func New(log *slog.Logger, urlSaver URLSaver) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		const op = "handlers.url.save.New"
 
+		// add to log op and reqID
 		log := log.With(
 			slog.String("op", op),
 			slog.String("request_id", middleware.GetReqID(r.Context())),
 		)
 
+		// decode json request
 		var req Request
 		err := render.DecodeJSON(r.Body, &req)
 		if err != nil {
-			log.Error("failed to decode request bode", sl.Err(err))
+			log.Error("failed to decode request body", sl.Err(err))
 			render.JSON(w, r, resp.Error("failed to decode request"))
 			return
 		}
 		log.Info("request body decoded", slog.Any("request", req))
 
+		// validate url
 		if err := validator.New().Struct(req); err != nil {
 			validateErr := err.(validator.ValidationErrors)
 			log.Error("invalid request", sl.Err(err))
@@ -59,11 +59,14 @@ func New(log *slog.Logger, urlSaver URLSaver) http.HandlerFunc {
 			return
 		}
 
+		// get alias from request or random
 		alias := req.Alias
 		if alias == "" {
 			// TODO if new alias = old alias in db
 			alias = random.NewRandomString(aliasLength)
 		}
+
+		// save url in DB
 		err = urlSaver.SaveURL(req.URL, alias)
 		if err != nil {
 			if errors.Is(err, storage.ErrURLExists) {
@@ -77,6 +80,7 @@ func New(log *slog.Logger, urlSaver URLSaver) http.HandlerFunc {
 		}
 		log.Info("url added")
 
+		// response OK
 		responseOK(w, r, alias)
 	}
 }

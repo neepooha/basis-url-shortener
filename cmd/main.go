@@ -8,7 +8,9 @@ import (
 	"url_shortener/internal/lib/logger/handlers/slogpretty"
 	"url_shortener/internal/lib/logger/sl"
 	"url_shortener/internal/storage/sqlite"
-	"url_shortener/internal/transport/handlres/url/save"
+	"url_shortener/internal/transport/handlers/url/delete"
+	"url_shortener/internal/transport/handlers/url/redirect"
+	"url_shortener/internal/transport/handlers/url/save"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -35,19 +37,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	err = storage.SaveURL("https://google.com", "google")
-	if err != nil {
-		log.Error("failed to save url", sl.Err(err))
-		os.Exit(1)
-	}
-	log.Info("url saved")
-
-	err = storage.SaveURL("https://google.com", "google")
-	if err != nil {
-		log.Error("failed to save url", sl.Err(err))
-		os.Exit(1)
-	}
-
 	// init router
 	router := chi.NewRouter()
 
@@ -56,9 +45,18 @@ func main() {
 	router.Use(middleware.Recoverer)
 	router.Use(middleware.URLFormat)
 
-	router.Post("/url", save.New(log, storage))
-	log.Info("starting server", slog.String("addresses", cfg.Address))
+	router.Route("/url", func(r chi.Router) {
+		r.Use(middleware.BasicAuth("url_shortener", map[string]string{
+			cfg.HTTPServer.User: cfg.HTTPServer.Password,
+		}))
 
+		r.Post("/", save.New(log, storage))
+		r.Delete("/{alias}", delete.New(log, storage))
+
+	})
+	router.Get("/{alias}", redirect.New(log, storage))
+
+	log.Info("starting server", slog.String("addresses", cfg.Address))
 	srv := &http.Server{
 		Addr:         cfg.Address,
 		Handler:      router,
