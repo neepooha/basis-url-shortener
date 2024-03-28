@@ -41,12 +41,10 @@ func main() {
 	// init router
 	router := chi.NewRouter()
 
-	router.Use(middleware.RequestID)
-
-	// Для локальной откладки включить.
+	// enable for local debugging.
 	router.Use(middleware.Logger)
-
 	router.Use(mwLogger.New(log))
+	router.Use(middleware.RequestID)
 	router.Use(middleware.Recoverer)
 	router.Use(middleware.URLFormat)
 
@@ -57,10 +55,10 @@ func main() {
 
 		r.Post("/", save.New(log, storage))
 		r.Delete("/{alias}", delete.New(log, storage))
-
 	})
 	router.Get("/{alias}", redirect.New(log, storage))
 
+	// start server
 	log.Info("starting server", slog.String("addresses", cfg.Address))
 	srv := &http.Server{
 		Addr:         cfg.Address,
@@ -72,7 +70,6 @@ func main() {
 	if err := srv.ListenAndServe(); err != nil {
 		log.Error("failed to start server")
 	}
-
 	log.Error("server was stoped")
 }
 

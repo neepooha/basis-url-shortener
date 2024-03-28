@@ -101,6 +101,3 @@ func (s *Storage) DeleteURL(alias string) error {
 	}
 	return nil
 }
-
-// TODO: implement DeleteURL
-// func (s *Storage) DeleteURL(alias string) error {}

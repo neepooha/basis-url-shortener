@@ -25,7 +25,7 @@ type HTTPServer struct {
 
 // Must - обозначает, что функция либо выполнится, либо вызовет панику
 func MustLoad() *Config {
-	// loads environment variables from the local.env file
+	// loads environment variables from the .env file
 	if err := godotenv.Load(".env"); err != nil {
 		log.Fatal("Error loading .env file")
 	}

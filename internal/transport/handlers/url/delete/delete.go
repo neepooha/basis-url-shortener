@@ -13,6 +13,7 @@ import (
 	"github.com/go-chi/render"
 )
 
+//go:generate go run github.com/vektra/mockery/v2@v2.28.2 --name=URLDeleter
 type URLDeleter interface {
 	DeleteURL(alias string) error
 }
@@ -27,6 +28,7 @@ func New(log *slog.Logger, urlDeleter URLDeleter) http.HandlerFunc {
 			slog.String("request_id", middleware.GetReqID(r.Context())),
 		)
 
+		// get alias from url
 		alias := chi.URLParam(r, "alias")
 		if alias == "" {
 			log.Info("alias is empty")
@@ -35,6 +37,7 @@ func New(log *slog.Logger, urlDeleter URLDeleter) http.HandlerFunc {
 		}
 		log.Info("alias was get from url", slog.String("alias", alias))
 
+		// delete URL by alias
 		err := urlDeleter.DeleteURL(alias)
 		if err != nil {
 			if errors.Is(err, storage.ErrAliasNotFound) {
@@ -48,6 +51,7 @@ func New(log *slog.Logger, urlDeleter URLDeleter) http.HandlerFunc {
 		}
 		log.Info("delete alias", slog.String("alias", alias))
 
+		// respone OK
 		render.JSON(w, r, resp.OK())
 	}
 }
