@@ -1,0 +1,7 @@
+env: "prod"
+storage_path: "./storage/storage.db"
+http_server:
+  address: "172.17.5.237:1488"
+  timeout: 4s
+  idle_timeout: 30s
+  user: "Teddy1"
