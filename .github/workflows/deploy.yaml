@@ -46,6 +46,7 @@ jobs:
         run: |
           ssh -i deploy_key.pem -p ${{ env.PORT }} -o StrictHostKeyChecking=no  ${{ env.HOST }}  "\
           sudo apt-get install build-essential && \
+          cd ~/apps/url-shortener/ && \
           go env -w CGO_ENABLED='1' && \
           go mod download && \
           go mod tidy && \
