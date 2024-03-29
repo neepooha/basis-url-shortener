@@ -33,13 +33,6 @@ jobs:
         uses: actions/setup-go@v2
         with:
           go-version: 1.22.1
-      - name: Build app
-        run: |
-          sudo apt-get install build-essential
-          go env -w CGO_ENABLED='1'
-          go mod download
-          go mod tidy
-          go build -o url-shortener ./cmd/url-shortener
       - name: Deploy to VM
         run: |
           sudo apt-get install -y ssh rsync
@@ -49,6 +42,14 @@ jobs:
           rsync -avz -e 'ssh -i deploy_key.pem -p ${{ env.PORT }} -o StrictHostKeyChecking=no' --exclude='.git' ./ ${{ env.HOST }}:${{ env.DEPLOY_DIRECTORY }} 
         env:
           DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+      - name: Build app in VM
+        run: |
+          ssh -i deploy_key.pem -p ${{ env.PORT }} -o StrictHostKeyChecking=no  ${{ env.HOST }}  "\
+          sudo apt-get install build-essential && \
+          go env -w CGO_ENABLED='1' && \
+          go mod download && \
+          go mod tidy && \
+          go build -o url-shortener ./cmd/url-shortener"
       - name: Remove old systemd service file
         run: |
           ssh -i deploy_key.pem -p ${{ env.PORT }} -o StrictHostKeyChecking=no ${{ env.HOST }} "rm -f /etc/systemd/system/url-shortener.service"
