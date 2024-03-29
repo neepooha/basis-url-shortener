@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/ilyakaznacheev/cleanenv"
-	// "github.com/joho/godotenv"
+	"github.com/joho/godotenv"
 )
 
 type Config struct {
@@ -25,12 +25,10 @@ type HTTPServer struct {
 
 // Must - обозначает, что функция либо выполнится, либо вызовет панику
 func MustLoad() *Config {
-	/*
 	// loads environment variables from the .env file
-	if err := godotenv.Load(".env"); err != nil {
+	if err := godotenv.Load("config.env"); err != nil {
 		log.Fatal("Error loading .env file")
 	}
-*/
 	// get configPath from our new env
 	configPath := os.Getenv("CONFIG_PATH")
 	if configPath == "" {
