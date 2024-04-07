@@ -59,8 +59,8 @@ jobs:
           touch ${{ env.ENV_FILE_PATH }} && \
           chmod 600 ${{ env.ENV_FILE_PATH }} && \
           echo 'CONFIG_PATH=${{ env.CONFIG_PATH }}' > ${{ env.ENV_FILE_PATH }} && \
-          echo 'HTTP_SERVER_PASSWORD=${{ secrets.AUTH_PASS }}' >> ${{ env.ENV_FILE_PATH }}"
-          echo 'APP_SECRET=${{ secrets.APP_SECRET }}' >> ${{ env.ENV_FILE_PATH }}"
+          echo 'HTTP_SERVER_PASSWORD=${{ secrets.AUTH_PASS }}' >> ${{ env.ENV_FILE_PATH }} && \
+          echo 'APP_SECRET=${{ secrets.APP_SECRET }}' >> ${{ env.ENV_FILE_PATH }} "
       - name: Copy systemd service file
         run: |
           scp -i deploy_key.pem -P ${{ env.PORT }} -o StrictHostKeyChecking=no ${{ github.workspace }}/deployment/url-shortener.service ${{ env.HOST }}:/tmp/url-shortener.service
