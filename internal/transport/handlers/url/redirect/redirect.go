@@ -31,7 +31,7 @@ func New(log *slog.Logger, urlGetter URLGetter) http.HandlerFunc {
 		// get alias from url
 		alias := chi.URLParam(r, "alias")
 		if alias == "" {
-			log.Info("alias is empty")
+			log.Warn("alias is empty")
 			render.JSON(w, r, resp.Error("invalid request"))
 			return
 		}
@@ -41,11 +41,11 @@ func New(log *slog.Logger, urlGetter URLGetter) http.HandlerFunc {
 		resURL, err := urlGetter.GetURL(alias)
 		if err != nil {
 			if errors.Is(err, storage.ErrURLNotFound) {
-				log.Info("wrong alias", slog.String("alias", alias))
+				log.Warn("wrong alias", slog.String("alias", alias))
 				render.JSON(w, r, resp.Error("wrong alias"))
 				return
 			}
-			log.Info("failed to get url", sl.Err(err))
+			log.Error("failed to get url", sl.Err(err))
 			render.JSON(w, r, resp.Error("internal error"))
 			return
 		}

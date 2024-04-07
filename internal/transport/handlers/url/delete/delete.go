@@ -31,7 +31,7 @@ func New(log *slog.Logger, urlDeleter URLDeleter) http.HandlerFunc {
 		// get alias from url
 		alias := chi.URLParam(r, "alias")
 		if alias == "" {
-			log.Info("alias is empty")
+			log.Warn("alias is empty")
 			render.JSON(w, r, resp.Error("invalid request"))
 			return
 		}
@@ -41,11 +41,11 @@ func New(log *slog.Logger, urlDeleter URLDeleter) http.HandlerFunc {
 		err := urlDeleter.DeleteURL(alias)
 		if err != nil {
 			if errors.Is(err, storage.ErrAliasNotFound) {
-				log.Info("url by alias was not found", slog.String("alias", alias))
+				log.Warn("url by alias was not found", slog.String("alias", alias))
 				render.JSON(w, r, resp.Error("url by alias was not found"))
 				return
 			}
-			log.Info("failed to delete url", sl.Err(err))
+			log.Error("failed to delete url", sl.Err(err))
 			render.JSON(w, r, resp.Error("internal error"))
 			return
 		}

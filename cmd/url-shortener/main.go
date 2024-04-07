@@ -1,9 +1,11 @@
 package main
 
 import (
+	"context"
 	"log/slog"
 	"net/http"
 	"os"
+	ssogrpc "url_shortener/internal/clients/sso/grpc"
 	"url_shortener/internal/config"
 	"url_shortener/internal/lib/logger/handlers/slogpretty"
 	"url_shortener/internal/lib/logger/sl"
@@ -19,7 +21,6 @@ import (
 
 const (
 	envLocal = "local"
-	envDev   = "dev"
 	envProd  = "prod"
 )
 
@@ -31,6 +32,19 @@ func main() {
 	log := setupLogger(cfg.Env)
 	log.Info("starting url shortener", slog.String("env", cfg.Env))
 	log.Debug("debug messages are enabled")
+
+	ssoClient, err := ssogrpc.New(
+		context.Background(),
+		log, cfg.Clients.SSO.Address,
+		cfg.Clients.SSO.Timeout,
+		cfg.Clients.SSO.RetriesCount,
+	)
+	if err != nil {
+		log.Error("failed to init ssoClient", sl.Err(err))
+		os.Exit(1)
+	}
+
+	ssoClient.IsAdmin(context.Background(), 1)
 
 	// init storage
 	storage, err := sqlite.NewStorage(cfg.StoragePath)
@@ -80,8 +94,6 @@ func setupLogger(env string) *slog.Logger {
 	switch env {
 	case envLocal:
 		log = setupPrettySlog()
-	case envDev:
-		log = slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}))
 	case envProd:
 		log = slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelInfo}))
 	default:

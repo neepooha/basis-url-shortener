@@ -1,4 +1,4 @@
-env: "local" # local, dev, prod
+env: "local" # local, prod
 storage_path: "./storage/storage.db"
 http_server:
   address: "localhost:8080"

@@ -13,6 +13,8 @@ type Config struct {
 	Env         string `yaml:"env" env-default:"local"`
 	StoragePath string `yaml:"storage_path" env-required:"true"`
 	HTTPServer  `yaml:"http_server"`
+	Clients ClientConfig `yaml:"clients"`
+	AppSecret string `yaml:"app_secret" env-required:"true" env:"APP_SECRET"`
 }
 
 type HTTPServer struct {
@@ -21,6 +23,16 @@ type HTTPServer struct {
 	IdleTimeout time.Duration `yaml:"idle_timeout" env-default:"60s"`
 	User        string        `yaml:"user" env-required:"true"`
 	Password    string        `yaml:"password" env-required:"true" env:"HTTP_SERVER_PASSWORD"`
+}
+
+type Client struct {
+	Address string `yaml:"address"`
+	Timeout time.Duration `yaml:"timeout"`
+	RetriesCount int `yaml:"retriesCount`
+}
+
+type ClientConfig struct {
+	SSO Client `yaml:"sso"`
 }
 
 // Must - обозначает, что функция либо выполнится, либо вызовет панику
