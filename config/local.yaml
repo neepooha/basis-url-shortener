@@ -6,3 +6,8 @@ http_server:
   idle_timeout: 60s # Время жизни соединения с клиентом
   user: "myuser"
   password: "mypass"
+clients:
+  address: "localhost:44044"
+  timeout: 15s
+  retriesCount: 5
+app_secret: "test-secret"

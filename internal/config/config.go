@@ -13,8 +13,8 @@ type Config struct {
 	Env         string `yaml:"env" env-default:"local"`
 	StoragePath string `yaml:"storage_path" env-required:"true"`
 	HTTPServer  `yaml:"http_server"`
-	Clients ClientConfig `yaml:"clients"`
-	AppSecret string `yaml:"app_secret" env-required:"true" env:"APP_SECRET"`
+	Clients     ClientConfig `yaml:"clients"`
+	AppSecret   string       `yaml:"app_secret" env-required:"true" env:"APP_SECRET"`
 }
 
 type HTTPServer struct {
@@ -26,9 +26,9 @@ type HTTPServer struct {
 }
 
 type Client struct {
-	Address string `yaml:"address"`
-	Timeout time.Duration `yaml:"timeout"`
-	RetriesCount int `yaml:"retriesCount`
+	Address      string        `yaml:"address" env-default:"localhost:44044"`
+	Timeout      time.Duration `yaml:"timeout"`
+	RetriesCount int           `yaml:"retriesCount"`
 }
 
 type ClientConfig struct {

@@ -33,6 +33,7 @@ func main() {
 	log.Info("starting url shortener", slog.String("env", cfg.Env))
 	log.Debug("debug messages are enabled")
 
+	log.Info("try to connect to ssoServer", slog.String("env", cfg.Env))
 	ssoClient, err := ssogrpc.New(
 		context.Background(),
 		log, cfg.Clients.SSO.Address,
@@ -44,7 +45,13 @@ func main() {
 		os.Exit(1)
 	}
 
-	ssoClient.IsAdmin(context.Background(), 1)
+	log.Info("test ssoClient", slog.String("env", cfg.Env))
+	isAdmin, err := ssoClient.IsAdmin(context.Background(), 1)
+	if err != nil {
+		log.Error("failed to get answer from ssoClient", sl.Err(err))
+		os.Exit(1)
+	}
+	log.Info("test ssoClient was succefully", slog.Bool("is_admin", isAdmin))
 
 	// init storage
 	storage, err := sqlite.NewStorage(cfg.StoragePath)
