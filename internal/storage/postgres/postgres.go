@@ -68,12 +68,9 @@ func IsDuplicatedKeyError(err error) bool {
 func (s *Storage) GetURL(alias string) (string, error) {
 	const op = "storage.sqlite.GetURL"
 
-	stmt, err := s.db.Prepare("SELECT url FROM url WHERE alias = ?")
-	if err != nil {
-		return "", fmt.Errorf("%s: %w", op, err)
-	}
+	stmt := `SELECT url FROM url WHERE alias = $1`
 	var resURL string
-	err = stmt.QueryRow(alias).Scan(&resURL)
+	resURL, err := s.db.QueryRow(context.Background(), stmt, alias)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return "", fmt.Errorf("%s: %w", op, storage.ErrURLNotFound)
