@@ -10,11 +10,19 @@ import (
 )
 
 type Config struct {
-	Env         string `yaml:"env" env-default:"local"`
-	StoragePath string `yaml:"storage_path" env-required:"true"`
-	HTTPServer  `yaml:"http_server"`
-	Clients     ClientConfig `yaml:"clients"`
-	AppSecret   string       `yaml:"app_secret" env-required:"true" env:"APP_SECRET"`
+	Env        string  `yaml:"env" env-default:"local"`
+	Storage    Storage `yaml:"storage" env-required:"true"`
+	HTTPServer `yaml:"http_server"`
+	Clients    ClientConfig `yaml:"clients"`
+	AppSecret  string       `yaml:"app_secret" env-required:"true" env:"APP_SECRET"`
+}
+
+type Storage struct {
+	Host     string `yaml:"host" env-required:"true"`
+	Port     string `yaml:"port" env-required:"true"`
+	User     string `yaml:"user" env-required:"true"`
+	Dbname   string `yaml:"dbname" env-required:"true"`
+	Password string `yaml:"password" env-required:"true"`
 }
 
 type HTTPServer struct {

@@ -8,6 +8,7 @@ import (
 	"url_shortener/internal/lib/logger/sl"
 	"url_shortener/internal/lib/random"
 	"url_shortener/internal/storage"
+	"url_shortener/internal/transport/middleware/auth"
 
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/render"
@@ -40,7 +41,14 @@ func New(log *slog.Logger, urlSaver URLSaver) http.HandlerFunc {
 			slog.String("op", op),
 			slog.String("request_id", middleware.GetReqID(r.Context())),
 		)
+		
 
+		if _, ok := auth.UIDFromContext(r.Context()); !ok {
+			log.Info("user without logging")
+			render.JSON(w, r, resp.Error("you are not logged into your account"))
+			return
+		}
+		
 		// decode json request
 		var req Request
 		err := render.DecodeJSON(r.Body, &req)

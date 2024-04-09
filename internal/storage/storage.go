@@ -7,3 +7,9 @@ var (
 	ErrURLExists     = errors.New("url exists")
 	ErrAliasNotFound = errors.New("alias not found")
 )
+
+type Urls struct {
+	Id    uint64 `gorm:"primaryKey"`
+	Alias string `gorm:""`
+	Url   string `gorm:""`
+}

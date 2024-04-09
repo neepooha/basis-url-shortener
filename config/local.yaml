@@ -1,4 +1,13 @@
 env: "local" # local, prod
+psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
+    "password=%s dbname=%s sslmode=disable",
+    host, port, user, password, dbname)
+storage:
+  host: "localhost"
+  port: 5432
+  user: "postgres"
+  dbname: "postgres"
+  password: "mysecretpassword"
 storage_path: "./storage/storage.db"
 http_server:
   address: "localhost:8080"

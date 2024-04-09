@@ -13,6 +13,7 @@ import (
 	"url_shortener/internal/transport/handlers/url/delete"
 	"url_shortener/internal/transport/handlers/url/redirect"
 	"url_shortener/internal/transport/handlers/url/save"
+	"url_shortener/internal/transport/middleware/auth"
 	mwLogger "url_shortener/internal/transport/middleware/logger"
 
 	"github.com/go-chi/chi/v5"
@@ -31,9 +32,11 @@ func main() {
 	// init logger
 	log := setupLogger(cfg.Env)
 	log.Info("starting url shortener", slog.String("env", cfg.Env))
-	log.Debug("debug messages are enabled")
+	log.Debug("debug messages are enabled", slog.String("address", cfg.Address))
 
+	// connect to ssoServer
 	log.Info("try to connect to ssoServer", slog.String("env", cfg.Env))
+	log.Debug("creddentials", slog.String("address", cfg.Clients.SSO.Address))
 	ssoClient, err := ssogrpc.New(
 		context.Background(),
 		log, cfg.Clients.SSO.Address,
@@ -44,14 +47,7 @@ func main() {
 		log.Error("failed to init ssoClient", sl.Err(err))
 		os.Exit(1)
 	}
-
-	log.Info("test ssoClient", slog.String("env", cfg.Env))
-	isAdmin, err := ssoClient.IsAdmin(context.Background(), 1)
-	if err != nil {
-		log.Error("failed to get answer from ssoClient", sl.Err(err))
-		os.Exit(1)
-	}
-	log.Info("test ssoClient was succefully", slog.Bool("is_admin", isAdmin))
+	log.Info("connected to ssoClient")
 
 	// init storage
 	storage, err := sqlite.NewStorage(cfg.StoragePath)
@@ -62,23 +58,28 @@ func main() {
 
 	// init router
 	router := chi.NewRouter()
-
-	// enable for local debugging.
+	
 	router.Use(middleware.Logger)
 	router.Use(mwLogger.New(log))
 	router.Use(middleware.RequestID)
 	router.Use(middleware.Recoverer)
 	router.Use(middleware.URLFormat)
 
+	// url router
 	router.Route("/url", func(r chi.Router) {
-		r.Use(middleware.BasicAuth("url_shortener", map[string]string{
-			cfg.HTTPServer.User: cfg.HTTPServer.Password,
-		}))
+		r.Use(auth.New(log, cfg.AppSecret, ssoClient))
 
 		r.Post("/", save.New(log, storage))
 		r.Delete("/{alias}", delete.New(log, storage))
 	})
 	router.Get("/{alias}", redirect.New(log, storage))
+
+	/* // user router
+	router.Route("/user", func(r chi.Router) {
+		r.Use(middleware.BasicAuth("url_shortener", map[string]string{
+			cfg.HTTPServer.User: cfg.HTTPServer.Password,
+		}))
+	}) */
 
 	// start server
 	log.Info("starting server", slog.String("addresses", cfg.Address))
