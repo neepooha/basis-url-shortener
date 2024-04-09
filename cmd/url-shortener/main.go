@@ -9,7 +9,9 @@ import (
 	"url_shortener/internal/config"
 	"url_shortener/internal/lib/logger/handlers/slogpretty"
 	"url_shortener/internal/lib/logger/sl"
-	"url_shortener/internal/storage/sqlite"
+	"url_shortener/internal/storage/postgres"
+
+	// "url_shortener/internal/storage/sqlite"
 	"url_shortener/internal/transport/handlers/url/delete"
 	"url_shortener/internal/transport/handlers/url/redirect"
 	"url_shortener/internal/transport/handlers/url/save"
@@ -32,11 +34,11 @@ func main() {
 	// init logger
 	log := setupLogger(cfg.Env)
 	log.Info("starting url shortener", slog.String("env", cfg.Env))
-	log.Debug("debug messages are enabled", slog.String("address", cfg.Address))
+	log.Debug("creddentials url-shortener", slog.String("address", cfg.Address))
 
 	// connect to ssoServer
 	log.Info("try to connect to ssoServer", slog.String("env", cfg.Env))
-	log.Debug("creddentials", slog.String("address", cfg.Clients.SSO.Address))
+	log.Debug("creddentials sso", slog.String("address", cfg.Clients.SSO.Address))
 	ssoClient, err := ssogrpc.New(
 		context.Background(),
 		log, cfg.Clients.SSO.Address,
@@ -49,16 +51,23 @@ func main() {
 	}
 	log.Info("connected to ssoClient")
 
-	// init storage
-	storage, err := sqlite.NewStorage(cfg.StoragePath)
+	// init postgresql storage
+	storage, err := postgres.NewStorage(cfg)
 	if err != nil {
 		log.Error("failed to init storage", sl.Err(err))
 		os.Exit(1)
 	}
 
+	/* // init sqlite storage
+	storage, err := sqlite.NewStorage(cfg.StoragePath)
+	if err != nil {
+		log.Error("failed to init storage", sl.Err(err))
+		os.Exit(1)
+	} */
+
 	// init router
 	router := chi.NewRouter()
-	
+
 	router.Use(middleware.Logger)
 	router.Use(mwLogger.New(log))
 	router.Use(middleware.RequestID)

@@ -2,7 +2,6 @@ package postgres
 
 import (
 	"context"
-	"database/sql"
 	"errors"
 	"fmt"
 	"url_shortener/internal/config"
@@ -19,7 +18,7 @@ type Storage struct {
 func NewStorage(cfg *config.Config) (*Storage, error) {
 	const op = "storage.postgres.NewStorage"
 
-	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
+	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s "+
 		"password=%s dbname=%s sslmode=disable",
 		cfg.Storage.Host, cfg.Storage.Port, cfg.Storage.User, cfg.Storage.Password, cfg.Storage.Dbname)
 
@@ -27,11 +26,10 @@ func NewStorage(cfg *config.Config) (*Storage, error) {
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
-	defer db.Close()
 
 	stmt := `
 	CREATE TABLE IF NOT EXISTS url(
-		id INTEGER PRIMARY KEY,
+		id SERIAL  PRIMARY KEY,
 		alias TEXT NOT NULL UNIQUE,
 		url TEXT NOT NULL);
 	CREATE INDEX IF NOT EXISTS idx_alias on url(alias);`
@@ -46,13 +44,45 @@ func NewStorage(cfg *config.Config) (*Storage, error) {
 
 func (s *Storage) SaveURL(urlToSave string, alias string) error {
 	const op = "storage.postgres.SaveURL"
-	stmt := `INSERT INTO url(url, alias) VALUES($1, $2)"`
+
+	stmt := `INSERT INTO url (url, alias) VALUES($1, $2)`
 	_, err := s.db.Exec(context.Background(), stmt, urlToSave, alias)
 	if err != nil {
 		if IsDuplicatedKeyError(err) {
 			return fmt.Errorf("%s: %w", op, storage.ErrURLExists)
 		}
 		return fmt.Errorf("%s: %w", op, err)
+	}
+	return nil
+}
+
+func (s *Storage) GetURL(alias string) (string, error) {
+	const op = "storage.postgres.GetURL"
+	stmt := `SELECT url FROM url WHERE alias = $1`
+	var resURL string
+
+	err := s.db.QueryRow(context.Background(), stmt, alias).Scan(&resURL)
+	if err != nil {
+		if IsNotFoundError(err) {
+			return "", fmt.Errorf("%s: %w", op, storage.ErrURLNotFound)
+		}
+		return "", fmt.Errorf("%s: %w", op, err)
+	}
+
+	return resURL, nil
+}
+
+func (s *Storage) DeleteURL(alias string) error {
+	const op = "storage.postgres.DeleteURL"
+
+	stmt := `DELETE FROM url WHERE alias = $1`
+	res, err := s.db.Exec(context.Background(), stmt, alias)
+	if err != nil {
+		return fmt.Errorf("%s: %w", op, err)
+	}
+	affect := res.RowsAffected()
+	if affect == 0 {
+		return fmt.Errorf("%s: %w", op, storage.ErrAliasNotFound)
 	}
 	return nil
 }
@@ -65,41 +95,6 @@ func IsDuplicatedKeyError(err error) bool {
 	return false
 }
 
-func (s *Storage) GetURL(alias string) (string, error) {
-	const op = "storage.sqlite.GetURL"
-
-	stmt := `SELECT url FROM url WHERE alias = $1`
-	var resURL string
-	resURL, err := s.db.QueryRow(context.Background(), stmt, alias)
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return "", fmt.Errorf("%s: %w", op, storage.ErrURLNotFound)
-		}
-		return "", fmt.Errorf("%s: %w", op, err)
-	}
-
-	return resURL, nil
-}
-
-func (s *Storage) DeleteURL(alias string) error {
-	const op = "storage.sqlite.DeleteURL"
-
-	stmt, err := s.db.Prepare("DELETE FROM url WHERE alias = ?")
-	if err != nil {
-		return fmt.Errorf("%s: %w", op, err)
-	}
-
-	res, err := stmt.Exec(alias)
-	if err != nil {
-		return fmt.Errorf("%s: %w", op, err)
-	}
-	affect, err := res.RowsAffected()
-	if err != nil {
-		return fmt.Errorf("%s: %w", op, err)
-	}
-
-	if affect == 0 {
-		return fmt.Errorf("%s: %w", op, storage.ErrAliasNotFound)
-	}
-	return nil
+func IsNotFoundError(err error) bool {
+	return err.Error() == "no rows in result set"
 }
