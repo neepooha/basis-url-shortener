@@ -12,9 +12,11 @@ import (
 	"url_shortener/internal/storage/postgres"
 
 	// "url_shortener/internal/storage/sqlite"
-	"url_shortener/internal/transport/handlers/url/delete"
-	"url_shortener/internal/transport/handlers/url/redirect"
-	"url_shortener/internal/transport/handlers/url/save"
+	urlDel "url_shortener/internal/transport/handlers/url/delete"
+	urlRed"url_shortener/internal/transport/handlers/url/redirect"
+	urlSave "url_shortener/internal/transport/handlers/url/save"
+	admSet"url_shortener/internal/transport/handlers/admins/set"
+	admDel "url_shortener/internal/transport/handlers/admins/delete"
 	"url_shortener/internal/transport/middleware/auth"
 	mwLogger "url_shortener/internal/transport/middleware/logger"
 
@@ -80,17 +82,19 @@ func main() {
 	router.Route("/url", func(r chi.Router) {
 		r.Use(auth.New(log, cfg.AppSecret, ssoClient))
 
-		r.Post("/", save.New(log, storage))
-		r.Delete("/{alias}", delete.New(log, storage))
+		r.Post("/", urlSave.New(log, storage))
+		r.Delete("/{alias}", urlDel.New(log, storage))
 	})
-	router.Get("/{alias}", redirect.New(log, storage))
+	router.Get("/{alias}", urlRed.New(log, storage))
 
-	/* // user router
+	/// user router
 	router.Route("/user", func(r chi.Router) {
 		r.Use(middleware.BasicAuth("url_shortener", map[string]string{
 			cfg.HTTPServer.User: cfg.HTTPServer.Password,
 		}))
-	}) */
+		r.Post("/", admSet.New(log, ssoClient))
+		r.Delete("/", admDel.New(log, ssoClient))
+	})
 
 	// start server
 	log.Info("starting server", slog.String("addresses", cfg.Address))

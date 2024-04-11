@@ -15,8 +15,9 @@ import (
 )
 
 type Client struct {
-	api ssov1.AuthClient
-	log *slog.Logger
+	auth ssov1.AuthClient
+	perm ssov1.PermissionsClient
+	log  *slog.Logger
 }
 
 func New(ctx context.Context, log *slog.Logger, addr string, timeout time.Duration, retriesCount int) (*Client, error) {
@@ -43,22 +44,45 @@ func New(ctx context.Context, log *slog.Logger, addr string, timeout time.Durati
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
-	
+
 	return &Client{
-		api: ssov1.NewAuthClient(cc),
-		log: log,
+		auth: ssov1.NewAuthClient(cc),
+		perm: ssov1.NewPermissionsClient(cc),
+		log:  log,
 	}, nil
 }
 
 func (c *Client) IsAdmin(ctx context.Context, userID uint64) (bool, error) {
 	const op = "grpc.IsAdmin"
-	resp, err := c.api.IsAdmin(ctx, &ssov1.IsAdminRequest{
+	resp, err := c.auth.IsAdmin(ctx, &ssov1.IsAdminRequest{
 		UserId: userID,
 	})
 	if err != nil {
 		return false, fmt.Errorf("%s: %w", op, err)
 	}
 	return resp.GetIsAdmin(), nil
+}
+
+func (c *Client) SetAdmin(ctx context.Context, email string) (bool, error) {
+	const op = "grpc.SetAdmin"
+	resp, err := c.perm.SetAdmin(ctx, &ssov1.SetAdminRequest{
+		Email: email,
+	})
+	if err != nil {
+		return false, fmt.Errorf("%s: %w", op, err)
+	}
+	return resp.GetSetAdmin(), nil
+}
+
+func (c *Client) DelAdmin(ctx context.Context, email string) (bool, error) {
+	const op = "grpc.DelAdmin"
+	resp, err := c.perm.DelAdmin(ctx, &ssov1.DelAdminRequest{
+		Email: email,
+	})
+	if err != nil {
+		return false, fmt.Errorf("%s: %w", op, err)
+	}
+	return resp.GetDelAdmin(), nil
 }
 
 func InterceptorLogger(log *slog.Logger) grpclog.Logger {

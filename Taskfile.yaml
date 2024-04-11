@@ -8,7 +8,7 @@ tasks:
       - up
     desc: "up migrations"
     cmds: 
-      - migrate -source file://./migrations/ -database postgres://postgres:mypass@localhost:5432/urls?sslmode=disable up
+      - migrate -source file://./migrations/ -database postgres://postgres:mypass@localhost:5431/urls?sslmode=disable up
   rollback:
     aliases:
       - down
