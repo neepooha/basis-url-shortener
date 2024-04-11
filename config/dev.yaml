@@ -1,19 +1,19 @@
-env: "local" # local, dev, prod
+env: "dev"
 storage:
-  host: "localhost"
+  host: "urldb"
   port: 5432
   dbname: "urls"
   user: "postgres"
   password: "mypass"
 http_server:
-  address: "localhost:8080"
+  address: "rest-server:8080"
   timeout: 4s # Время на чтение и отправку запроса
   idle_timeout: 60s # Время жизни соединения с клиентом
   user: "myuser"
   password: "mypass"
 clients:
   sso:
-    address: "localhost:44044"
+    address: "sso-server:44044"
     timeout: 15s
     retriesCount: 5
 app_secret: "test-secret"
