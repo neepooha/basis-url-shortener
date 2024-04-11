@@ -26,7 +26,7 @@ type Storage struct {
 }
 
 type HTTPServer struct {
-	Address     string        `yaml:"address" env-default:"localhost:8080"`
+	Address     string        `yaml:"address" env-default:":8080"`
 	Timeout     time.Duration `yaml:"timeout" env-default:"4s"`
 	IdleTimeout time.Duration `yaml:"idle_timeout" env-default:"60s"`
 	User        string        `yaml:"user" env-required:"true"`
@@ -34,7 +34,7 @@ type HTTPServer struct {
 }
 
 type Client struct {
-	Address      string        `yaml:"address" env-default:"localhost:44044"`
+	Address      string        `yaml:"address" env-default:":44044"`
 	Timeout      time.Duration `yaml:"timeout"`
 	RetriesCount int           `yaml:"retriesCount"`
 }

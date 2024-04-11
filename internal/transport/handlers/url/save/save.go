@@ -41,14 +41,18 @@ func New(log *slog.Logger, urlSaver URLSaver) http.HandlerFunc {
 			slog.String("op", op),
 			slog.String("request_id", middleware.GetReqID(r.Context())),
 		)
-		
 
 		if _, ok := auth.UIDFromContext(r.Context()); !ok {
+			if err, ok := auth.ErrorFromContext(r.Context()); ok {
+				log.Error("failed to get UID", sl.Err(err))
+				render.JSON(w, r, resp.Error("Internal Error"))
+				return
+			}
 			log.Info("user without logging")
 			render.JSON(w, r, resp.Error("you are not logged into your account"))
 			return
 		}
-		
+
 		// decode json request
 		var req Request
 		err := render.DecodeJSON(r.Body, &req)

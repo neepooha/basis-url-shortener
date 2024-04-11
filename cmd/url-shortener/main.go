@@ -37,8 +37,9 @@ func main() {
 	log.Debug("creddentials url-shortener", slog.String("address", cfg.Address))
 
 	// connect to ssoServer
-	log.Info("try to connect to ssoServer", slog.String("env", cfg.Env))
+	log.Info("init ssoServer", slog.String("env", cfg.Env))
 	log.Debug("creddentials sso", slog.String("address", cfg.Clients.SSO.Address))
+
 	ssoClient, err := ssogrpc.New(
 		context.Background(),
 		log, cfg.Clients.SSO.Address,
@@ -49,7 +50,7 @@ func main() {
 		log.Error("failed to init ssoClient", sl.Err(err))
 		os.Exit(1)
 	}
-	log.Info("connected to ssoClient")
+	log.Info("ssoClient was init")
 
 	// init postgresql storage
 	storage, err := postgres.NewStorage(cfg)

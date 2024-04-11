@@ -7,10 +7,5 @@ COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
 RUN go build -o url-shortener ./cmd/url-shortener/main.go
-ENTRYPOINT [ "./url-shortener" ]
-
-FROM base AS build-migrator
-RUN go build -o migrations ./cmd/migrator/main.go
-RUN ./migrations
-
 EXPOSE 8080
+ENTRYPOINT [ "./url-shortener" ]

@@ -43,6 +43,7 @@ func New(ctx context.Context, log *slog.Logger, addr string, timeout time.Durati
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
+	
 	return &Client{
 		api: ssov1.NewAuthClient(cc),
 		log: log,

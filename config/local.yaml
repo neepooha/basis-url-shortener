@@ -1,10 +1,10 @@
 env: "local" # local, prod
 storage:
-  host: "localhost"
+  host: "0.0.0.0"
   port: 5432
-  user: "postgres"
-  dbname: "postgres"
-  password: "mysecretpassword"
+  dbname: "urls"
+  user: "myuser"
+  password: "mypass"
 http_server:
   address: "localhost:8080"
   timeout: 4s # Время на чтение и отправку запроса
@@ -12,7 +12,8 @@ http_server:
   user: "myuser"
   password: "mypass"
 clients:
-  address: "localhost:44044"
-  timeout: 15s
-  retriesCount: 5
+  sso:
+    address: "localhost:44044"
+    timeout: 15s
+    retriesCount: 5
 app_secret: "test-secret"

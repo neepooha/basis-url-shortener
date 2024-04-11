@@ -31,6 +31,11 @@ func New(log *slog.Logger, urlDeleter URLDeleter) http.HandlerFunc {
 
 		IsAdmin, ok := auth.IsAdminFromContext(r.Context())
 		if !ok {
+			if err, ok := auth.ErrorFromContext(r.Context()); ok {
+				log.Error("failed to get IsAdminBool", sl.Err(err))
+				render.JSON(w, r, resp.Error("Internal error"))
+				return
+			}
 			log.Info("user without logging")
 			render.JSON(w, r, resp.Error("you are not logged into your account"))
 			return

@@ -1,2 +1,2 @@
 /storage/storage.db
-config.env
+*.env
