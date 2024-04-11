@@ -24,6 +24,7 @@ import (
 
 const (
 	envLocal = "local"
+	envDev   = "dev"
 	envProd  = "prod"
 )
 
@@ -112,6 +113,8 @@ func setupLogger(env string) *slog.Logger {
 	switch env {
 	case envLocal:
 		log = setupPrettySlog()
+	case envDev:
+		log = slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}))
 	case envProd:
 		log = slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelInfo}))
 	default:
