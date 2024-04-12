@@ -28,7 +28,7 @@ services:
     networks:
       - urlnet
     volumes:
-      - postgresql_data:/var/lib/postgresql/data
+      - postgresql_urldb:/var/lib/postgresql/urldb
     healthcheck:
       test: ["CMD-SHELL", "sh -c 'pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}'"]
       interval: 5s
@@ -37,7 +37,7 @@ services:
       start_period: 10s
 
 volumes:
-  postgresql_data:
+  postgresql_urldb:
 
 networks:
   urlnet:

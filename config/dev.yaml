@@ -5,6 +5,7 @@ storage:
   dbname: "url"
   user: "myuser"
   password: "mypass"
+  migrations_path: "./migrations"
 http_server:
   address: "rest-server:8080"
   timeout: 4s # Время на чтение и отправку запроса

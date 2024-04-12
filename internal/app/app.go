@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log/slog"
 	"net/http"
@@ -10,6 +11,7 @@ import (
 	ssogrpc "url_shortener/internal/clients/sso/grpc"
 	"url_shortener/internal/config"
 	"url_shortener/internal/lib/logger/sl"
+	"url_shortener/internal/lib/migrator"
 	"url_shortener/internal/storage/postgres"
 	admDel "url_shortener/internal/transport/handlers/admins/delete"
 	admSet "url_shortener/internal/transport/handlers/admins/set"
@@ -21,6 +23,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/golang-migrate/migrate/v4"
 )
 
 func RunServer(ctx context.Context, log *slog.Logger, cfg *config.Config) error {
@@ -49,6 +52,17 @@ func RunServer(ctx context.Context, log *slog.Logger, cfg *config.Config) error 
 		return fmt.Errorf("%s: %w", op, err)
 	}
 	defer storage.CloseStorage()
+
+	// start migration
+	err = migrator.Migrate(cfg)
+	if err != nil {
+		if errors.Is(err, migrate.ErrNoChange) {
+			log.Debug("no migrations to apply")
+		} else {
+			panic(err)
+		}
+	}
+	log.Debug("migrations applied successfully")
 
 	// init router
 	router := chi.NewRouter()
@@ -87,12 +101,12 @@ func RunServer(ctx context.Context, log *slog.Logger, cfg *config.Config) error 
 			os.Exit(1)
 		}
 	}()
-	log.Info("url shortener is running", slog.String("addresses", cfg.Address))
+	log.Info("url shortener is running", slog.String("addresses", srv.Addr))
 
 	// wait for gracefully shutdown
 	<-ctx.Done()
 	log.Info("shutting down server gracefully")
-	shutDownCtx, cancel := context.WithTimeout(context.Background(), 3	*time.Second)
+	shutDownCtx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 	if err := srv.Shutdown(shutDownCtx); err != nil {
 		return fmt.Errorf("shutdown: %w", err)
