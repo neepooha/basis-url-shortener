@@ -8,30 +8,31 @@ tasks:
       - up
     desc: "up migrations"
     cmds: 
-      - migrate -source file://./migrations/ -database postgres://postgres:mypass@localhost:5431/urls?sslmode=disable up
+      - migrate -source file://./migrations/ -database postgres://myuser:mypass@localhost:5431/url?sslmode=disable up
   rollback:
     aliases:
       - down
     desc: "down migrations"
     cmds: 
-      - migrate -source file://./migrations/ -database postgres://postgres:mypass@localhost:5432/urls?sslmode=disable down
+      - migrate -source file://./migrations/ -database postgres://myuser:mypass@localhost:5432/url?sslmode=disable down
   drop:
     aliases:
-      - migrations_test
+      - "drop migrations"
     desc: "run test migrations"
     cmds: 
-     - migrate -source file://./migrations/ -database postgres://postgres:mypass@localhost:5432/urls?sslmode=disable drop
+     - migrate -source file://./migrations/ -database postgres://myuser:mypass@localhost:5431/url?sslmode=disable drop
   generate:
     aliases:
       - migrate
     desc: "run migrations"
     cmds: 
-      - go run ./cmd/migrator/ --url=postgres:mypass@localhost:5432 --dbname=urls --migrations-path=./migrations
-  generate_test:
+      - go run ./cmd/migrator/ --url=myuser:mypass@localhost:5432 --dbname=url --migrations-path=./migrations
+  dockpos:
     aliases:
-      - migrations_test
-    desc: "run test migrations"
-    cmds: 
-      - go run ./cmd/migrator/ --url=postgres:mypass@localhost:5432 --dbname=urls --migrations-path=./tests/migrations --migrations-table=migrations_test
+      - postgres
+    desc: "run docker postgres"
+    cmds:
+      - docker run --name url-pos -e POSTGRES_DB=url -e POSTGRES_USER=myuser -e POSTGRES_PASSWORD=mypass -p 5431:5432 -d postgres
+
 
       # See: https://taskfile.dev/api/

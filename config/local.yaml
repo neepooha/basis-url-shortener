@@ -2,8 +2,8 @@ env: "local" # local, dev, prod
 storage:
   host: "localhost"
   port: 5431
-  dbname: "urls"
-  user: "postgres"
+  dbname: "url"
+  user: "myuser"
   password: "mypass"
 http_server:
   address: "localhost:8080"

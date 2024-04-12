@@ -2,8 +2,8 @@ env: "dev"
 storage:
   host: "urldb"
   port: 5432
-  dbname: "urls"
-  user: "postgres"
+  dbname: "url"
+  user: "myuser"
   password: "mypass"
 http_server:
   address: "rest-server:8080"

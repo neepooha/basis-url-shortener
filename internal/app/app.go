@@ -19,8 +19,8 @@ import (
 	"url_shortener/internal/transport/middleware/auth"
 	mwLogger "url_shortener/internal/transport/middleware/logger"
 
-	"github.com/go-chi/chi"
-	"github.com/go-chi/chi/middleware"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 )
 
 func RunServer(ctx context.Context, log *slog.Logger, cfg *config.Config) error {
@@ -28,7 +28,7 @@ func RunServer(ctx context.Context, log *slog.Logger, cfg *config.Config) error 
 	log.With(slog.String("op", op))
 
 	// init ssoServer
-	log.Info("init ssoServer", slog.String("env", cfg.Env))
+	log.Info("init ssoClinet", slog.String("env", cfg.Env))
 	log.Debug("creddentials sso", slog.String("address", cfg.Clients.SSO.Address))
 	ssoClient, err := ssogrpc.New(
 		context.Background(),
@@ -74,7 +74,6 @@ func RunServer(ctx context.Context, log *slog.Logger, cfg *config.Config) error 
 	})
 
 	// start server
-	log.Info("starting server")
 	srv := &http.Server{
 		Addr:         cfg.Address,
 		Handler:      router,
@@ -88,12 +87,12 @@ func RunServer(ctx context.Context, log *slog.Logger, cfg *config.Config) error 
 			os.Exit(1)
 		}
 	}()
-	log.Info("server start", slog.String("addresses", cfg.Address))
+	log.Info("url shortener is running", slog.String("addresses", cfg.Address))
 
 	// wait for gracefully shutdown
 	<-ctx.Done()
 	log.Info("shutting down server gracefully")
-	shutDownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	shutDownCtx, cancel := context.WithTimeout(context.Background(), 3	*time.Second)
 	defer cancel()
 	if err := srv.Shutdown(shutDownCtx); err != nil {
 		return fmt.Errorf("shutdown: %w", err)

@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  url-shortener:
+    depends_on: 
+      urldb:
+        condition: service_healthy
+        restart: true
+    build:
+      context: .
+    container_name: url-shortener
+    hostname: rest-server
+    networks:
+      - urlnet
+      - ssonet
+    ports:
+      - 8080:8080
+    deploy:
+      restart_policy:
+        condition: on-failure
+ 
+  urldb:
+    image: postgres:latest
+    container_name: urlDB
+    hostname: urldb
+    env_file:
+      - ./config.env
+    networks:
+      - urlnet
+    volumes:
+      - postgresql_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "sh -c 'pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}'"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
+
+volumes:
+  postgresql_data:
+
+networks:
+  urlnet:
+    driver: bridge
+  ssonet:
+    driver: bridge
