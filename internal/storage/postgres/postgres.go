@@ -26,8 +26,11 @@ func NewStorage(cfg *config.Config) (*Storage, error) {
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
-
 	return &Storage{db: db}, nil
+}
+
+func (s *Storage) CloseStorage() {
+	s.db.Close()
 }
 
 func (s *Storage) SaveURL(ctx context.Context, urlToSave string, alias string) error {

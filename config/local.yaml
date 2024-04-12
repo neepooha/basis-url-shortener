@@ -1,7 +1,7 @@
 env: "local" # local, dev, prod
 storage:
   host: "localhost"
-  port: 5432
+  port: 5431
   dbname: "urls"
   user: "postgres"
   password: "mypass"
@@ -11,7 +11,7 @@ http_server:
   idle_timeout: 60s # Время жизни соединения с клиентом
   user: "myuser"
   password: "mypass"
-clients:
+clients:  
   sso:
     address: "localhost:44044"
     timeout: 15s
