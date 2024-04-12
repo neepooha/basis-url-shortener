@@ -30,11 +30,11 @@ func NewStorage(cfg *config.Config) (*Storage, error) {
 	return &Storage{db: db}, nil
 }
 
-func (s *Storage) SaveURL(urlToSave string, alias string) error {
+func (s *Storage) SaveURL(ctx context.Context, urlToSave string, alias string) error {
 	const op = "storage.postgres.SaveURL"
 
 	stmt := `INSERT INTO urls (url, alias) VALUES($1, $2)`
-	_, err := s.db.Exec(context.Background(), stmt, urlToSave, alias)
+	_, err := s.db.Exec(ctx, stmt, urlToSave, alias)
 	if err != nil {
 		if IsDuplicatedKeyError(err) {
 			return fmt.Errorf("%s: %w", op, storage.ErrURLExists)
@@ -44,12 +44,12 @@ func (s *Storage) SaveURL(urlToSave string, alias string) error {
 	return nil
 }
 
-func (s *Storage) GetURL(alias string) (string, error) {
+func (s *Storage) GetURL(ctx context.Context, alias string) (string, error) {
 	const op = "storage.postgres.GetURL"
 
 	stmt := `SELECT url FROM urls WHERE alias = $1`
 	var resURL string
-	err := s.db.QueryRow(context.Background(), stmt, alias).Scan(&resURL)
+	err := s.db.QueryRow(ctx, stmt, alias).Scan(&resURL)
 	if err != nil {
 		if IsNotFoundError(err) {
 			return "", fmt.Errorf("%s: %w", op, storage.ErrURLNotFound)
@@ -60,11 +60,11 @@ func (s *Storage) GetURL(alias string) (string, error) {
 	return resURL, nil
 }
 
-func (s *Storage) DeleteURL(alias string) error {
+func (s *Storage) DeleteURL(ctx context.Context, alias string) error {
 	const op = "storage.postgres.DeleteURL"
 
 	stmt := `DELETE FROM urls WHERE alias = $1`
-	res, err := s.db.Exec(context.Background(), stmt, alias)
+	res, err := s.db.Exec(ctx, stmt, alias)
 	if err != nil {
 		return fmt.Errorf("%s: %w", op, err)
 	}

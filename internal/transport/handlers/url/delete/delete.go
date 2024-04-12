@@ -1,6 +1,7 @@
 package delete
 
 import (
+	"context"
 	"errors"
 	"log/slog"
 	"net/http"
@@ -14,9 +15,9 @@ import (
 	"github.com/go-chi/render"
 )
 
-//go:generate go run github.com/vektra/mockery/v2@v2.28.2 --name=URLDeleter
+//go:generate go run github.com/vektra/mockery/v2@v2.42.2 --name=URLDeleter
 type URLDeleter interface {
-	DeleteURL(alias string) error
+	DeleteURL(ctx context.Context, alias string) error
 }
 
 func New(log *slog.Logger, urlDeleter URLDeleter) http.HandlerFunc {
@@ -56,7 +57,7 @@ func New(log *slog.Logger, urlDeleter URLDeleter) http.HandlerFunc {
 		log.Info("alias was get from url", slog.String("alias", alias))
 
 		// delete URL by alias
-		err := urlDeleter.DeleteURL(alias)
+		err := urlDeleter.DeleteURL(r.Context(), alias)
 		if err != nil {
 			if errors.Is(err, storage.ErrAliasNotFound) {
 				log.Warn("url by alias was not found", slog.String("alias", alias))

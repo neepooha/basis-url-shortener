@@ -1,6 +1,7 @@
 package redirect
 
 import (
+	"context"
 	"errors"
 	"log/slog"
 	"net/http"
@@ -13,9 +14,9 @@ import (
 	"github.com/go-chi/render"
 )
 
-//go:generate go run github.com/vektra/mockery/v2@v2.28.2 --name=URLGetter
+//go:generate go run github.com/vektra/mockery/v2@v2.42.2 --name=URLGetter
 type URLGetter interface {
-	GetURL(alias string) (string, error)
+	GetURL(ctx context.Context, alias string) (string, error)
 }
 
 func New(log *slog.Logger, urlGetter URLGetter) http.HandlerFunc {
@@ -38,7 +39,7 @@ func New(log *slog.Logger, urlGetter URLGetter) http.HandlerFunc {
 		log.Info("alias was get from url", slog.String("alias", alias))
 
 		// get resURL by alias
-		resURL, err := urlGetter.GetURL(alias)
+		resURL, err := urlGetter.GetURL(r.Context(), alias)
 		if err != nil {
 			if errors.Is(err, storage.ErrURLNotFound) {
 				log.Warn("wrong alias", slog.String("alias", alias))
