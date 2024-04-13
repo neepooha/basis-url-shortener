@@ -35,7 +35,7 @@ type HTTPServer struct {
 }
 
 type Client struct {
-	Address      string        `yaml:"address" env-default:":44044"`
+	Address      string        `yaml:"address"`
 	Timeout      time.Duration `yaml:"timeout"`
 	RetriesCount int           `yaml:"retriesCount"`
 }

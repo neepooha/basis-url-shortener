@@ -9,7 +9,7 @@ import (
 	"url_shortener/internal/lib/logger/sl"
 	"url_shortener/internal/lib/random"
 	"url_shortener/internal/storage"
-	"url_shortener/internal/transport/middleware/auth"
+	get "url_shortener/internal/transport/middleware/context"
 
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/render"
@@ -19,7 +19,7 @@ import (
 type Request struct {
 	URL   string `json:"url" validate:"required,url"`
 	Alias string `json:"alias"`
-}	
+}
 
 type Response struct {
 	resp.Response
@@ -43,8 +43,8 @@ func New(log *slog.Logger, urlSaver URLSaver) http.HandlerFunc {
 			slog.String("request_id", middleware.GetReqID(r.Context())),
 		)
 
-		if _, ok := auth.UIDFromContext(r.Context()); !ok {
-			if err, ok := auth.ErrorFromContext(r.Context()); ok {
+		if _, ok := get.UIDFromContext(r.Context()); !ok {
+			if err, ok := get.ErrorFromContext(r.Context()); ok {
 				log.Error("failed to get UID", sl.Err(err))
 				render.JSON(w, r, resp.Error("Internal Error"))
 				return

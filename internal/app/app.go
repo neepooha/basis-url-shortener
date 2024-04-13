@@ -19,6 +19,7 @@ import (
 	urlRed "url_shortener/internal/transport/handlers/url/redirect"
 	urlSave "url_shortener/internal/transport/handlers/url/save"
 	"url_shortener/internal/transport/middleware/auth"
+	"url_shortener/internal/transport/middleware/isadmin"
 	mwLogger "url_shortener/internal/transport/middleware/logger"
 
 	"github.com/go-chi/chi/v5"
@@ -74,9 +75,13 @@ func RunServer(ctx context.Context, log *slog.Logger, cfg *config.Config) error 
 
 	// url router
 	router.Route("/url", func(r chi.Router) {
-		r.Use(auth.New(log, cfg.AppSecret, ssoClient))
+		r.Use(auth.New(log, cfg.AppSecret))
 		r.Post("/", urlSave.New(log, storage))
-		r.Delete("/{alias}", urlDel.New(log, storage))
+	})
+	router.Route("/url/{alias}", func(r chi.Router) {
+		r.Use(auth.New(log, cfg.AppSecret))
+		r.Use(isadmin.New(log, ssoClient))
+		r.Delete("/", urlDel.New(log, storage))
 	})
 	router.Get("/{alias}", urlRed.New(log, storage))
 

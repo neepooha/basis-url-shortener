@@ -1,3 +1,3 @@
-INSERT INTO urls (id, alias, url)
-VALUES (1, 'habr', 'https://habr.com/')
+INSERT INTO urls (alias, url)
+VALUES ('habr', 'https://habr.com/')
 ON CONFLICT DO NOTHING;

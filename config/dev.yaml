@@ -7,14 +7,14 @@ storage:
   password: "mypass"
   migrations_path: "./migrations"
 http_server:
-  address: "rest-server:8080"
+  address: "url-shortener:8080"
   timeout: 4s # Время на чтение и отправку запроса
   idle_timeout: 60s # Время жизни соединения с клиентом
   user: "myuser"
   password: "mypass"
 clients:
   sso:
-    address: "sso-server:44044"
+    address: "sso:44044"
     timeout: 15s
     retriesCount: 5
 app_secret: "test-secret"

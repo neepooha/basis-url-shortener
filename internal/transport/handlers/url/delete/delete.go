@@ -8,7 +8,7 @@ import (
 	resp "url_shortener/internal/lib/api/response"
 	"url_shortener/internal/lib/logger/sl"
 	"url_shortener/internal/storage"
-	"url_shortener/internal/transport/middleware/auth"
+	get "url_shortener/internal/transport/middleware/context"
 
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/chi/v5"
@@ -30,9 +30,9 @@ func New(log *slog.Logger, urlDeleter URLDeleter) http.HandlerFunc {
 			slog.String("request_id", middleware.GetReqID(r.Context())),
 		)
 
-		IsAdmin, ok := auth.IsAdminFromContext(r.Context())
+		IsAdmin, ok := get.IsAdminFromContext(r.Context())
 		if !ok {
-			if err, ok := auth.ErrorFromContext(r.Context()); ok {
+			if err, ok := get.ErrorFromContext(r.Context()); ok {
 				log.Error("failed to get IsAdminBool", sl.Err(err))
 				render.JSON(w, r, resp.Error("Internal error"))
 				return
