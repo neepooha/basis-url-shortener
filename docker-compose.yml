@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  url-shortener:
+    depends_on: 
+      urldb:
+        condition: service_healthy
+        restart: true
+    build:
+      context: .
+    container_name: url-shortener
+    networks:
+      - urlnet
+      - auth-network
+    ports:
+      - 8080:8080
+    deploy:
+      restart_policy:
+        condition: on-failure
+ 
+  urldb:
+    image: postgres:latest
+    container_name: urlDB
+    env_file:
+      - ./config.env
+    networks:
+      - urlnet
+    volumes:
+      - postgresql_urldb:/var/lib/postgresql/urldb
+    healthcheck:
+      test: ["CMD-SHELL", "sh -c 'pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}'"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
+volumes:
+  postgresql_urldb:
+
+networks:
+  urlnet:
+    driver: bridge
+  auth-network:
+    driver: bridge
+    external: true
