@@ -8,6 +8,7 @@ services:
         restart: true
     build:
       context: .
+    image: url-shortener
     container_name: url-shortener
     networks:
       - urlnet
