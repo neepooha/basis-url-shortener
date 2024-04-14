@@ -34,6 +34,7 @@ func New(log *slog.Logger, appSecret string) func(next http.Handler) http.Handle
 			claims := tokenParsed.Claims.(jwt.MapClaims)
 			log.Info("user authorized", slog.Any("claims", claims))
 			ctx := context.WithValue(r.Context(), get.UidKey, uint64(claims["uid"].(float64)))
+			ctx = context.WithValue(ctx, get.AppIDKey, uint64(claims["app_id"].(float64)))
 
 			next.ServeHTTP(w, r.WithContext(ctx))
 		})

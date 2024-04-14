@@ -85,9 +85,8 @@ func RunServer(ctx context.Context, log *slog.Logger, cfg *config.Config) error 
 	})
 	router.Get("/{alias}", urlRed.New(log, storage))
 
-	/// user router
+	// user router
 	router.Route("/user", func(r chi.Router) {
-		r.Use(middleware.BasicAuth("url_shortener", map[string]string{cfg.HTTPServer.User: cfg.HTTPServer.Password}))
 		r.Post("/", admSet.New(log, ssoClient))
 		r.Delete("/", admDel.New(log, ssoClient))
 	})

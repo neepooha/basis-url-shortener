@@ -9,7 +9,7 @@ import (
 )
 
 type PermissionProvider interface {
-	IsAdmin(ctx context.Context, userID uint64) (bool, error)
+	IsAdmin(ctx context.Context, userID uint64, appID int) (bool, error)
 }
 
 func New(log *slog.Logger, permProvider PermissionProvider) func(next http.Handler) http.Handler {
@@ -25,7 +25,15 @@ func New(log *slog.Logger, permProvider PermissionProvider) func(next http.Handl
 				return
 			}
 
-			isAdmin, err := permProvider.IsAdmin(r.Context(), uid)
+			appID, ok := get.APPIDFromContext(r.Context())
+			if !ok {
+				log.Error("failed to get APPID")
+				ctx := context.WithValue(r.Context(), get.ErrKey, get.ErrFailedIsAdminCheck)
+				next.ServeHTTP(w, r.WithContext(ctx))
+				return
+			}
+
+			isAdmin, err := permProvider.IsAdmin(r.Context(), uid, appID)
 			if err != nil {
 				log.Error("failed to check if user is admin", sl.Err(err))
 				ctx := context.WithValue(r.Context(), get.ErrKey, get.ErrFailedIsAdminCheck)

@@ -8,15 +8,15 @@ import (
 
 	grpclog "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
 	grpcretry "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/retry"
-	ssov1 "github.com/neepooha/protos/gen/go/sso"
+	ssov2 "github.com/neepooha/protos/gen/go/sso"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials/insecure"
 )
 
 type Client struct {
-	auth ssov1.AuthClient
-	perm ssov1.PermissionsClient
+	auth ssov2.AuthClient
+	perm ssov2.PermissionsClient
 	log  *slog.Logger
 }
 
@@ -46,16 +46,17 @@ func New(ctx context.Context, log *slog.Logger, addr string, timeout time.Durati
 	}
 
 	return &Client{
-		auth: ssov1.NewAuthClient(cc),
-		perm: ssov1.NewPermissionsClient(cc),
+		auth: ssov2.NewAuthClient(cc),
+		perm: ssov2.NewPermissionsClient(cc),
 		log:  log,
 	}, nil
 }
 
-func (c *Client) IsAdmin(ctx context.Context, userID uint64) (bool, error) {
+func (c *Client) IsAdmin(ctx context.Context, userID uint64, appID int) (bool, error) {
 	const op = "grpc.IsAdmin"
-	resp, err := c.auth.IsAdmin(ctx, &ssov1.IsAdminRequest{
+	resp, err := c.perm.IsAdmin(ctx, &ssov2.IsAdminRequest{
 		UserId: userID,
+		AppId: int32(appID),
 	})
 	if err != nil {
 		return false, fmt.Errorf("%s: %w", op, err)
@@ -63,10 +64,12 @@ func (c *Client) IsAdmin(ctx context.Context, userID uint64) (bool, error) {
 	return resp.GetIsAdmin(), nil
 }
 
-func (c *Client) SetAdmin(ctx context.Context, email string) (bool, error) {
+func (c *Client) SetAdmin(ctx context.Context, email string, appID int) (bool, error) {
 	const op = "grpc.SetAdmin"
-	resp, err := c.perm.SetAdmin(ctx, &ssov1.SetAdminRequest{
+	
+	resp, err := c.perm.SetAdmin(ctx, &ssov2.SetAdminRequest{
 		Email: email,
+		AppId: int32(appID),
 	})
 	if err != nil {
 		return false, fmt.Errorf("%s: %w", op, err)
@@ -74,10 +77,11 @@ func (c *Client) SetAdmin(ctx context.Context, email string) (bool, error) {
 	return resp.GetSetAdmin(), nil
 }
 
-func (c *Client) DelAdmin(ctx context.Context, email string) (bool, error) {
+func (c *Client) DelAdmin(ctx context.Context, email string, appID int) (bool, error) {
 	const op = "grpc.DelAdmin"
-	resp, err := c.perm.DelAdmin(ctx, &ssov1.DelAdminRequest{
+	resp, err := c.perm.DelAdmin(ctx, &ssov2.DelAdminRequest{
 		Email: email,
+		AppId: int32(appID),
 	})
 	if err != nil {
 		return false, fmt.Errorf("%s: %w", op, err)
