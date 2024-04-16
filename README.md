@@ -70,7 +70,7 @@ git clone https://github.com/neepooha/url_shortener.git
 cd url_shortener
 
 # create config.env with that text:
-> ./config.env {
+$ nano config.env {
 CONFIG_PATH=./config/local.yaml
 POSTGRES_DB=url
 POSTGRES_USER=myuser
@@ -89,7 +89,7 @@ git clone [https://github.com/neepooha/url_shortener.git](https://github.com/nee
 cd sso
 
 # create config.env with that text:
-> ./config.env {
+$ nano config.env {
 CONFIG_PATH=./config/local.yaml
 POSTGRES_DB=url
 POSTGRES_USER=myuser
