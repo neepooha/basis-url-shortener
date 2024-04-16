@@ -1,17 +1,15 @@
 <div align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://github.com/neepooha/url-shortener/main/raw/assets/images/logo-white.png">
-    <img alt="Daytona logo" src="https://github.com/neepooha/url-shortener/main/raw/assets/images/logo-black.png" width="40%">
+    <source media="(prefers-color-scheme: dark)" srcset="https://github.com/neepooha/url_shortener/raw/main/assets/images/logo-white.png">
+    <img alt="logo" src="https://github.com/neepooha/url_shortener/raw/main/assets/images/logo-black.png" width="40%">
   </picture>
-  <br>
-  Url shortener
-  <br>
 </div>
 
 <br><br>
 
 <div align="center">
-[![License](https://img.shields.io/badge/License-MIT-red)](#license)
+  
+![License](https://img.shields.io/badge/License-MIT-red)
 [![Go Report Card](https://goreportcard.com/badge/github.com/neepooha/url_shortener)](https://goreportcard.com/report/github.com/neepooha/url_shortener)
 [![Go Reference](https://pkg.go.dev/badge/github.com/neepooha/url_shortener.svg)](https://pkg.go.dev/github.com/neepooha/url_shortener)
 [![Build Status](https://github.com/neepooha/url_shortener/actions/workflows/deploy.yml/badge.svg)](https://github.com/neepooha/url_shortener/actions/workflows/deploy.yml)
@@ -48,7 +46,8 @@ The kit uses the following Go packages:
 * Env reader: [godotenv](github.com/joho/godotenv)
 
 <div align="center">
-This project is a microservice that works in conjunction with a SSO microservice. For full functionality, you need to have two microservices running.
+This project is a microservice that works in conjunction with a SSO. For full functionality, you need to have two microservices running.
+  
 [![SSO](https://github-readme-stats.vercel.app/api/pin/?username=neepooha&repo=sso&border_color=7F3FBF&bg_color=0D1117&title_color=C9D1D9&text_color=8B949E&icon_color=7F3FBF)](https://github.com/neepooha/sso)
 <br>
 </div>
@@ -161,7 +160,7 @@ the `transport` directory contains the application logic related with the entity
 Within each feature package, code are organized in layers (API, service, repository), following the dependency guidelines
 as described in the [clean architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html).
 
-### Updating Database Schema
+## Updating Database Schema
 for simple migration you can use the following commands
 ```shell
 # For up migrations
@@ -173,7 +172,7 @@ task drop
 # Revert the last database migration.
 tasl rollback
 ```
-### Managing Configurations
+## Managing Configurations
 
 The application configuration is represented in `internal/config/config.go`. When the application starts,
 it loads the configuration from a configuration environment as well as environment variables. The path to the configuration environment
