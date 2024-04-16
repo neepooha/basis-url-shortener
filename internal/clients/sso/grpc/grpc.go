@@ -56,7 +56,7 @@ func (c *Client) IsAdmin(ctx context.Context, userID uint64, appID int) (bool, e
 	const op = "grpc.IsAdmin"
 	resp, err := c.perm.IsAdmin(ctx, &ssov2.IsAdminRequest{
 		UserId: userID,
-		AppId: int32(appID),
+		AppId:  int32(appID),
 	})
 	if err != nil {
 		return false, fmt.Errorf("%s: %w", op, err)
@@ -66,7 +66,7 @@ func (c *Client) IsAdmin(ctx context.Context, userID uint64, appID int) (bool, e
 
 func (c *Client) SetAdmin(ctx context.Context, email string, appID int) (bool, error) {
 	const op = "grpc.SetAdmin"
-	
+
 	resp, err := c.perm.SetAdmin(ctx, &ssov2.SetAdminRequest{
 		Email: email,
 		AppId: int32(appID),

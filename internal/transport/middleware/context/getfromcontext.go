@@ -21,7 +21,6 @@ var (
 	ErrFailedIsAdminCheck = errors.New("failed to check if user is admin")
 )
 
-
 func APPIDFromContext(ctx context.Context) (int, bool) {
 	appid, ok := ctx.Value(AppIDKey).(int)
 	return appid, ok

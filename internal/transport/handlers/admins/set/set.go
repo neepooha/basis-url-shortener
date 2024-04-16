@@ -76,7 +76,7 @@ func New(log *slog.Logger, permProvider PermissionSetter) http.HandlerFunc {
 			return
 		}
 		ctx := metadata.NewOutgoingContext(r.Context(), metadata.Pairs("Authorization", token))
-		
+
 		_, err = permProvider.SetAdmin(ctx, req.Email, req.AppID)
 		if err != nil {
 			errExpect := "grpc.SetAdmin: rpc error: code = InvalidArgument desc = invalid credentials"
