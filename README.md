@@ -46,12 +46,13 @@ It encourages writing clean and idiomatic Go code.
 * Env reader: [godotenv](github.com/joho/godotenv)
 <br>
 
-<div align="center">
-This project is a microservice that works in conjunction with a SSO. For full functionality, you need to have two microservices running.
-  
+
+> [!IMPORTANT]\
+> This project is a microservice that works in conjunction with a SSO. For full functionality, you need to have two microservices running.
+
 [![SSO](https://github-readme-stats.vercel.app/api/pin/?username=neepooha&repo=sso&border_color=7F3FBF&bg_color=0D1117&title_color=C9D1D9&text_color=8B949E&icon_color=7F3FBF)](https://github.com/neepooha/sso)
 <br>
-</div>
+
 
 ## Getting Started
 
