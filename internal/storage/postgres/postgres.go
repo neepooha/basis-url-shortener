@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"url_shortener/internal/config"
-	"url_shortener/internal/storage"
+	"github.com/neepooha/url_shortener/internal/config"
+	"github.com/neepooha/url_shortener/internal/storage"
 
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"

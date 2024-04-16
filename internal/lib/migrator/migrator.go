@@ -2,7 +2,7 @@ package migrator
 
 import (
 	"fmt"
-	"url_shortener/internal/config"
+	"github.com/neepooha/url_shortener/internal/config"
 
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"

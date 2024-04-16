@@ -6,10 +6,10 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"url_shortener/internal/app"
-	"url_shortener/internal/config"
-	"url_shortener/internal/lib/logger/handlers/slogpretty"
-	"url_shortener/internal/lib/logger/sl"
+	"github.com/neepooha/url_shortener/internal/app"
+	"github.com/neepooha/url_shortener/internal/config"
+	"github.com/neepooha/url_shortener/internal/lib/logger/handlers/slogpretty"
+	"github.com/neepooha/url_shortener/internal/lib/logger/sl"
 )
 
 const (

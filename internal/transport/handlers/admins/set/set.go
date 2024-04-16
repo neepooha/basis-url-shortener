@@ -6,8 +6,8 @@ import (
 	"log/slog"
 	"net/http"
 	"strings"
-	resp "url_shortener/internal/lib/api/response"
-	"url_shortener/internal/lib/logger/sl"
+	resp "github.com/neepooha/url_shortener/internal/lib/api/response"
+	"github.com/neepooha/url_shortener/internal/lib/logger/sl"
 
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/render"

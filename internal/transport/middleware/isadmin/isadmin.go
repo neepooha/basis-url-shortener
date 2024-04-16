@@ -4,8 +4,8 @@ import (
 	"context"
 	"log/slog"
 	"net/http"
-	"url_shortener/internal/lib/logger/sl"
-	get "url_shortener/internal/transport/middleware/context"
+	"github.com/neepooha/url_shortener/internal/lib/logger/sl"
+	get "github.com/neepooha/url_shortener/internal/transport/middleware/context"
 )
 
 type PermissionProvider interface {

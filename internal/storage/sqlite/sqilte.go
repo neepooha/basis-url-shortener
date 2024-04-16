@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"url_shortener/internal/storage"
+	"github.com/neepooha/url_shortener/internal/storage"
 
 	"github.com/mattn/go-sqlite3"
 	// _ "github.com/mattn/go-sqlite3" // init sqlite3 driver

@@ -5,9 +5,9 @@ import (
 	"errors"
 	"log/slog"
 	"net/http"
-	resp "url_shortener/internal/lib/api/response"
-	"url_shortener/internal/lib/logger/sl"
-	"url_shortener/internal/storage"
+	resp "github.com/neepooha/url_shortener/internal/lib/api/response"
+	"github.com/neepooha/url_shortener/internal/lib/logger/sl"
+	"github.com/neepooha/url_shortener/internal/storage"
 
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/chi/v5"

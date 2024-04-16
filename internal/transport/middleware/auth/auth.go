@@ -5,8 +5,8 @@ import (
 	"log/slog"
 	"net/http"
 	"strings"
-	"url_shortener/internal/lib/logger/sl"
-	get "url_shortener/internal/transport/middleware/context"
+	"github.com/neepooha/url_shortener/internal/lib/logger/sl"
+	get "github.com/neepooha/url_shortener/internal/transport/middleware/context"
 
 	"github.com/golang-jwt/jwt"
 )
