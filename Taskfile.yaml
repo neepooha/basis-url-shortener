@@ -18,15 +18,9 @@ tasks:
   drop:
     aliases:
       - "drop migrations"
-    desc: "run test migrations"
+    desc: "drop migrations"
     cmds: 
      - migrate -source file://./migrations/ -database postgres://myuser:mypass@localhost:5431/url?sslmode=disable drop
-  generate:
-    aliases:
-      - migrate
-    desc: "run migrations"
-    cmds: 
-      - go run ./cmd/migrator/ --url=myuser:mypass@localhost:5432 --dbname=url --migrations-path=./migrations
   db-start:
     aliases:
       - db-start
