@@ -22,7 +22,7 @@ This project was implemented for the purpose of learning, knowledge [SOLID princ
 and [clean architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html).
 It encourages writing clean and idiomatic Go code.
 
-The project used:
+### The project used:
 
 * RESTful endpoints in the widely accepted format
 * Standard CRUD operations of a database table
@@ -34,7 +34,7 @@ The project used:
 * Data validation
 * Containerizing an application in Docker
  
-The kit uses the following Go packages:
+### The kit uses the following Go packages:
 
 * Routing: [go-chi](https://github.com/go-chi/chi)
 * Database access: [pgx](https://github.com/jackc/pgx)
@@ -44,6 +44,7 @@ The kit uses the following Go packages:
 * JWT: [jwt-go](https://github.com/dgrijalva/jwt-go)
 * Config reader: [cleanv](github.com/ilyakaznacheev/cleanenv)  
 * Env reader: [godotenv](github.com/joho/godotenv)
+<br>
 
 <div align="center">
 This project is a microservice that works in conjunction with a SSO. For full functionality, you need to have two microservices running.
