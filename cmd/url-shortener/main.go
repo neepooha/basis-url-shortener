@@ -2,14 +2,14 @@ package main
 
 import (
 	"context"
-	"log/slog"
-	"os"
-	"os/signal"
-	"syscall"
 	"github.com/neepooha/url_shortener/internal/app"
 	"github.com/neepooha/url_shortener/internal/config"
 	"github.com/neepooha/url_shortener/internal/lib/logger/handlers/slogpretty"
 	"github.com/neepooha/url_shortener/internal/lib/logger/sl"
+	"log/slog"
+	"os"
+	"os/signal"
+	"syscall"
 )
 
 const (

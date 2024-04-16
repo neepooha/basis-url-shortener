@@ -3,11 +3,11 @@ package delete
 import (
 	"context"
 	"errors"
+	resp "github.com/neepooha/url_shortener/internal/lib/api/response"
+	"github.com/neepooha/url_shortener/internal/lib/logger/sl"
 	"log/slog"
 	"net/http"
 	"strings"
-	resp "github.com/neepooha/url_shortener/internal/lib/api/response"
-	"github.com/neepooha/url_shortener/internal/lib/logger/sl"
 
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/render"

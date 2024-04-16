@@ -2,11 +2,11 @@ package auth
 
 import (
 	"context"
+	"github.com/neepooha/url_shortener/internal/lib/logger/sl"
+	get "github.com/neepooha/url_shortener/internal/transport/middleware/context"
 	"log/slog"
 	"net/http"
 	"strings"
-	"github.com/neepooha/url_shortener/internal/lib/logger/sl"
-	get "github.com/neepooha/url_shortener/internal/transport/middleware/context"
 
 	"github.com/golang-jwt/jwt"
 )

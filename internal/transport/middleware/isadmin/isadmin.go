@@ -2,10 +2,10 @@ package isadmin
 
 import (
 	"context"
-	"log/slog"
-	"net/http"
 	"github.com/neepooha/url_shortener/internal/lib/logger/sl"
 	get "github.com/neepooha/url_shortener/internal/transport/middleware/context"
+	"log/slog"
+	"net/http"
 )
 
 type PermissionProvider interface {
