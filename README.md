@@ -17,10 +17,11 @@
 </div>
 
 ## Features
-
+The template for this project was taken from the project of [Nikolay Tuzov](https://github.com/JustSkiv).
 This project was implemented for the purpose of learning, knowledge [SOLID principles](https://en.wikipedia.org/wiki/SOLID) 
 and [clean architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html).
 It encourages writing clean and idiomatic Go code.
+
 
 ### The project used:
 
@@ -49,14 +50,14 @@ It encourages writing clean and idiomatic Go code.
 
 <div align="center">
   scheme of user interaction, SSO and URL-shortener
+  <br>
   <picture>
-    <source srcset="https://github.com/neepooha/url_shortener/raw/main/assets/images/scheme.png">
+    <img alt="scheme" src="https://github.com/neepooha/url_shortener/raw/main/assets/images/scheme.png" width="60%">
   </picture>
 </div>
 
 > [!IMPORTANT]\
 > This project is a microservice that works in conjunction with a SSO. For full functionality, you need to have two microservices running.
-
 [![SSO](https://github-readme-stats.vercel.app/api/pin/?username=neepooha&repo=sso&border_color=7F3FBF&bg_color=0D1117&title_color=C9D1D9&text_color=8B949E&icon_color=7F3FBF)](https://github.com/neepooha/sso)
 <br>
 
