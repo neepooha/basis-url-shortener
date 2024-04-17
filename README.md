@@ -57,7 +57,7 @@ It encourages writing clean and idiomatic Go code.
 </div>
 
 > [!IMPORTANT]\
-> This project is a microservice that works in conjunction with a SSO. For full functionality, you need to have two microservices running.
+> This project is a microservice that works in conjunction with a SSO. For full functionality, you need to have two microservices running.<br>
 [![SSO](https://github-readme-stats.vercel.app/api/pin/?username=neepooha&repo=sso&border_color=7F3FBF&bg_color=0D1117&title_color=C9D1D9&text_color=8B949E&icon_color=7F3FBF)](https://github.com/neepooha/sso)
 <br>
 
