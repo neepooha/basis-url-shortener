@@ -47,6 +47,13 @@ It encourages writing clean and idiomatic Go code.
 <br>
 
 
+<div align="center">
+  scheme of user interaction, SSO and URL-shortener
+  <picture>
+    <source srcset="https://github.com/neepooha/url_shortener/raw/main/assets/images/scheme.png">
+  </picture>
+</div>
+
 > [!IMPORTANT]\
 > This project is a microservice that works in conjunction with a SSO. For full functionality, you need to have two microservices running.
 
